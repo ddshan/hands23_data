@@ -14,18 +14,18 @@ wget
 
 ## Visualization
 ```
-python vis_hands23.py
+python vis/vis_hands23.py
 ```
 
 ## Data processing
 ```
-python get_coco_format.py
+python data_prep/get_coco_format.py
 ```
 
 
 ## SAM mask generation
 ```
-python get_sam_masks.py
+python sam/get_sam_masks.py
 ```
 
 
@@ -43,7 +43,7 @@ If you find this data and code useful for your research, please consider citing 
 
 ```
 
-and also make sure to cite the following paper: [COCO (Lin et al.)](https://cocodataset.org/#home), [VISOR (Darkhalil et al.)](https://epic-kitchens.github.io/VISOR/) and [Artic. (Qian et al.)](https://jasonqsy.github.io/Articulation3D/).
+and also make sure to cite the following paper where the subsets originate: [COCO (Lin et al.)](https://cocodataset.org/#home), [VISOR (Darkhalil et al.)](https://epic-kitchens.github.io/VISOR/) and [Artic. (Qian et al.)](https://jasonqsy.github.io/Articulation3D/).
 ```bibtex
 @inproceedings{lin2014microsoft,
   title={Microsoft coco: Common objects in context},
