@@ -1,10 +1,10 @@
 # Hands23 data
 
-Data repository for the paper: **Towards A Richer 2D Understanding of Hands at Scale.**
+Data repository for the paper: **Towards A Richer 2D Understanding of Hands at Scale (NeurIPS2023)**
 
 Tianyi Cheng*, [Dandan Shan*](https://ddshan.github.io/), Ayda Hassen, [Richard Higgins](https://relh.net/), [David Fouhey](https://cs.nyu.edu/~fouhey/).
 
-It contains the visulation (from raw annotation), data processing (from raw to COCO format), SAM mask generation for Hands23 dataset.
+It contains the SAM mask generation and annotation visulation for Hands23 dataset.
 
 ## Download and unzip
 ```
@@ -25,23 +25,34 @@ hands23_data/
 ```
 
 
+
+## SAM mask generation
+The downloaded data `hands23_data.zip` has all other annotations, except for SAM masks. Please follow [Segment Anything](https://github.com/facebookresearch/segment-anything) for the environment installation and downlowd the model checkpoint, the ViT-H SAM model (sam_vit_h_4b8939.pth). Then, you can generate SAM masks for raw format data by simply running
+```
+python sam/get_sam_masks.py
+```
+
+
+
+
 ## Visualization
+Visualize annotations: load from raw format and plot annotations on images.
 ```
 python vis/vis_hands23.py
 ```
 
 
-## Data processing
+
+<!-- ## Data processing
+Generate annotation from raw to COCO format.
 ```
 python data_prep/get_coco_format.py
 ```
+ -->
 
 
-## SAM mask generation
-```
-python sam/get_sam_masks.py
-```
-
+## Acknowledgement
+SAM
 
 ## Citing
 
