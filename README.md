@@ -6,9 +6,22 @@ Tianyi Cheng*, [Dandan Shan*](https://ddshan.github.io/), Ayda Hassen, [Richard 
 
 It contains the visulation (from raw annotation), data processing (from raw to COCO format), SAM mask generation for Hands23 dataset.
 
-## Download
+## Download and unzip
 ```
-wget 
+wget https://fouheylab.eecs.umich.edu/~dandans/projects/hands23/data/hands23_data.zip
+unzip hands23_data.zip -d where/to/unzip/
+```
+After unzip, the folder structure will look like below. `allMergedSplit` contains the train/val/test splits. `allMergedBlur` contains all JPG images. `allMergedTxt` contains all TXT annotation files correspond to JPG files by only adding `.txt` suffix. 
+```
+hands23_data/
+├── allMergedSplit
+|   ├── TEST.txt
+|   ├── TRAIN.txt
+|   └── VAL.txt
+├── allMergedBlur
+|   └── *.jpg
+└── allMergedTxt
+    └── *.jpg.txt
 ```
 
 
@@ -16,6 +29,7 @@ wget
 ```
 python vis/vis_hands23.py
 ```
+
 
 ## Data processing
 ```
@@ -55,7 +69,7 @@ and also make sure to cite the following paper where the subsets originate: [COC
 }
 ```
 
-```
+```bibtex
 @inproceedings{VISOR,
            title={EPIC-KITCHENS VISOR Benchmark: VIdeo Segmentations and Object Relations},
            author={Darkhalil, Ahmad and Shan, Dandan and Zhu, Bin and Ma, Jian and Kar, Amlan and Higgins, Richard and Fidler, Sanja and Fouhey, David and Damen, Dima},
@@ -64,7 +78,7 @@ and also make sure to cite the following paper where the subsets originate: [COC
 } 
 ```
 
-```
+```bibtex
 @inproceedings{Qian22,
     author = {Shengyi Qian and Linyi Jin and Chris Rockwell and Siyi Chen and David F. Fouhey},
     title = {Understanding 3D Object Articulation in Internet Videos},

@@ -1,12 +1,19 @@
-import os, glob, random, cv2, multiprocessing, argparse
+import os, glob, random, cv2, multiprocessing, argparse, shutil
 from collections import Counter
 from vis_utils import vis_per_image
+from tqdm import tqdm
 random.seed(0)
 
 def read_txt(path):
     line_ls = open(path, 'r').readlines()
     line_ls = [x.strip() for x in line_ls]
     return line_ls
+
+
+def save_list2txt(itemlist, outpath):
+    with open(outpath, "w") as outfile:
+        outfile.write("\n".join(itemlist))
+
 
 
 def parse_annotation(line_ls):
@@ -68,6 +75,7 @@ def draw_ann(imPath):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--copy_data", action='store_true')
     parser.add_argument("--show_vis", action='store_true')
     parser.add_argument("--show_stats", action='store_true')
     parser.add_argument("--table_stats", action='store_true')
@@ -84,26 +92,24 @@ if __name__ == '__main__':
     os.makedirs(save_f_dir, exist_ok=True)
     os.makedirs(save_h_dir, exist_ok=True)
 
-    im_ls = glob.glob(f'{hands23}/*.jpg')
-    txt_ls = glob.glob(f'{hands23}/*.txt')
 
-    print(len(im_ls))
-    print(len(txt_ls))
+    hands23_root = '/w/fouhey/hands2'
+    hands23_old_splits = hands23_root + f'/allMerged7Splits'
+    hands23_old_blurs  = hands23_root + f'/allMerged7Blur'
+    hands23_old_ann    = hands23_root + f'/allMerged7'
 
-    EK_ls = glob.glob(f'{hands23}/EK*.jpg')
-    AR_ls = glob.glob(f'{hands23}/AR*.jpg')
-    ND_ls = glob.glob(f'{hands23}/ND*.jpg')
-    CC_ls = glob.glob(f'{hands23}/CC*.jpg')
+    hands23_new_root = '/x/dandans/hands23_data_release'
+    hands23_new_splits = hands23_new_root + f'/allMergedSplit'
+    hands23_new_blurs  = hands23_new_root + f'/allMergedBlur'
+    hands23_new_ann    = hands23_new_root + f'/allMergedTxt'
 
-    countN = 0
-    countSide = []
-    countState = []
-    countHandBox = []
-    countObjBox = []
-    countToolType = []
-    countSecBox = []
-    countGrasp = []
-    count_mask = 0
+    
+
+    EK_ls = glob.glob(f'{hands23_new_blurs}/EK*.jpg')
+    AR_ls = glob.glob(f'{hands23_new_blurs}/AR*.jpg')
+    ND_ls = glob.glob(f'{hands23_new_blurs}/ND*.jpg')
+    CC_ls = glob.glob(f'{hands23_new_blurs}/CC*.jpg')
+
 
     # plot
     if args.show_vis:
@@ -124,133 +130,5 @@ if __name__ == '__main__':
                     break
             P = multiprocessing.Pool(36)
             P.map(draw_ann, select_ls)   
-
-    if args.table_stats:
-        print()
-        allImage, allHand, allFirst, allSecond, allGrape =0,0,0,0,0
-        for name, sub in zip(['ND', 'EK', 'AR', 'CC'], [ND_ls, EK_ls, AR_ls, CC_ls]):
-            print(len(sub))
-            random.shuffle(sub)
-            countSide = []
-            countState = []
-            countHandBox = []
-            countObjBox = []
-            countToolType = []
-            countSecBox = []
-            countGrasp = []
-
-            for imPath in sub:
-                txtPath = imPath+'.txt'
-                line_ls = read_txt(txtPath)
-
-                # count line by line
-                for line in line_ls:
-                    side, state, handBox, objectBox, toolType, secObjectBox, graspType = map(lambda x: x.strip(), line.split("|"))
-                    if side != "None":
-                        countSide.append(side)
-                    if state != "None":
-                        countState.append(state)
-                    if handBox != "None":
-                        countHandBox.append(handBox)
-                    if objectBox != "None":
-                        countObjBox.append(objectBox)
-                    if toolType != "None":
-                        countToolType.append(toolType)
-                    if secObjectBox != "None":
-                        countSecBox.append(secObjectBox)
-                    if graspType != "None":
-                        countGrasp.append(graspType)
-
-            print(f'sub = {name}')
-            print(len(countSide), len(countState), len(countHandBox))
-            print(len(countObjBox), len(countToolType))
-            print(len(countSecBox))
-            print(len(countGrasp))
-            print(f'<td>{len(sub)}</td>')
-            print(f'<td>{len(countSide)}</td>')
-            print(f'<td>{len(countObjBox)}</td>')
-            print(f'<td>{len(countSecBox)}</td>')
-            print(f'<td>{len(countGrasp)}</td>')
-            print()
-            allImage += len(sub)
-            allHand += len(countHandBox)
-            allFirst += len(countObjBox)
-            allSecond += len(countSecBox)
-            allGrape += len(countGrasp)
-
-        
-        print(f'<td>total</td>')
-        print(f'<td>{allImage}</td>')
-        print(f'<td>{allHand}</td>')
-        print(f'<td>{allFirst}</td>')
-        print(f'<td>{allSecond}</td>')
-        print(f'<td>{allGrape}</td>')
-        
-            
-                
-
-        
-
-    if args.show_stats:
-        for name, sub in zip(['ND', 'EK', 'AR', 'CC'], [ND_ls, EK_ls, AR_ls, CC_ls]):
-            print(len(sub))
-            countN += len(sub)
-            random.shuffle(sub)
-            sub = sub[:100]
-            for imPath in sub:
-                txtPath = imPath+'.txt'
-                blurImPath = imPath.replace(hands23, '/w/fouhey/hands2/allMerged7Blur')
-                # print(txtPath)
-                line_ls = read_txt(txtPath)
-                if 0:
-                    # get image
-                    im = cv2.imread(blurImPath)
-                    filename = os.path.split(imPath)[-1][:-4] 
-                    print(f'cur image = {filename}')
-
-                    # draw
-                    annotation = parse_annotation(line_ls)
-                    im = vis_per_image(im, annotation, filename, hands23_mask_dir, font_path='./times_b.ttf', use_simple=False)
-                    save_path = os.path.join(save_dir, filename+'.png')
-                    im.save(save_path)
-
-                # count line by line
-                for line in line_ls:
-                    side, state, handBox, objectBox, toolType, secObjectBox, graspType = map(lambda x: x.strip(), line.split("|"))
-                    # countSide.append(side)
-                    # countState.append(state)
-                    # countHandBox.append(handBox)
-                    # countObjBox.append(objectBox)
-                    # countToolType.append(toolType)
-                    # countSecBox.append(secObjectBox)
-                    # countGrasp.append(graspType)
-
-                    if handBox != 'None':
-                        count_mask += 1
-                    if objectBox != 'None':
-                        count_mask += 1
-                    if secObjectBox != 'None':
-                        count_mask += 1
-                
-
-                
-                
-
-        print('count masks', count_mask)   
-
-
-        print(f'totally {countN}')
-        print(f'\n Get the distribution:')
-        for item in [countSide, countState, countToolType, countGrasp]:
-            print(Counter(item))
-
-            # Counter({'right_hand': 230493, 'left_hand': 224321})
-            # Counter({'object_contact': 304361, 'no_contact': 105306, 'self_contact': 35171, 'inconclusive': 4998, 'other_person_contact': 4891, 'None': 87})
-            # Counter({'None': 173997, 'neither_,_held': 101121, 'neither_,_touched': 81742, 'container_,_held': 36501, 'tool_,_held': 27863, 'tool_,_used': 20587, 'container_,_touched': 12122, 'tool_,_touched': 881})
-            # Counter({'None': 389217, 'Pow-Pris': 24706, 'Pre-Pris': 17799, 'NP-Fin': 10640, 'NP-Palm': 5183, 'Pre-Circ': 3386, 'Pow-Circ': 3133, 'Lat': 750})
-
-
-        
-
 
 
