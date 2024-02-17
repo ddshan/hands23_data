@@ -46,12 +46,10 @@ def save_mask(mask, save_path):
 
 if __name__ == '__main__':
 
-    # python run_sam_4handv2.py --split train --index 0 --copy_img
     parser = argparse.ArgumentParser()
     parser.add_argument('--split', nargs='+', required=True, help='Which split to generate COCO annotations.')
     parser.add_argument('--target', type=str, default='hands23', help='Which dateset to generate SAM labels.')
     args = parser.parse_args()
-
 
     # define SAM
     sam_checkpoint = "sam_vit_h_4b8939.pth"
@@ -61,12 +59,6 @@ if __name__ == '__main__':
     sam.to(device=device)
     resize_transform = ResizeLongestSide(sam.image_encoder.img_size)
     predictor = SamPredictor(sam)
-
-    def prepare_image(image, transform, device):
-        image = transform.apply_image(image)
-        image = torch.as_tensor(image, device=device.device) 
-        return image.permute(2, 0, 1).contiguous()
-    
     
     # data dir
     hands23_root = '/x/dandans/hands23_data_release'
@@ -76,7 +68,6 @@ if __name__ == '__main__':
     
     mask_dir = f'{hands23_root}/masks_sam'
     os.makedirs(mask_dir, exist_ok=True)
-
 
 
     for split in args.split: #['train', 'val', 'test']:
@@ -92,15 +83,15 @@ if __name__ == '__main__':
         batched_bbox  = []
         batched_imagepath = []
         for fn in tqdm(images):
-
          
             imagePath = os.path.join(src, fn)
             textPath = os.path.join(txtBase, fn+".txt")
             if not os.path.exists(imagePath): 
-                continue
+                print(f'image not exist: {imagePath}')
+                breakpoint()
             if not os.path.exists(textPath): 
-                continue
-         
+                print(f'txt not exist: {textPath}')
+                breakpoint()
 
             data = open(textPath).read().strip()
             lines = [] if len(data) == 0 else data.split("\n")
@@ -109,7 +100,6 @@ if __name__ == '__main__':
             h, w = image.shape[0], image.shape[1]
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             predictor.set_image(image)
-
 
             for lineI, line in enumerate(lines):
                 bbox_ls = []

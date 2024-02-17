@@ -32,7 +32,7 @@ def parse_annotation(line_ls):
 
 
 def draw_ann(imPath):
-    txtPath = imPath+'.txt'
+    txtPath = imPath.replace('allMergedBlur', 'allMergedTxt')+'.txt'
     line_ls = read_txt(txtPath)
 
     # count line by line
@@ -46,7 +46,7 @@ def draw_ann(imPath):
 
         # draw
         annotation = parse_annotation(line_ls)
-        im, im_f, im_h = vis_per_image(im, annotation, filename, hands23_mask_dir, font_path='./times_b.ttf', use_simple=False)
+        im, im_f, im_h = vis_per_image(im, annotation, filename, hands23_mask, font_path='./times_b.ttf', use_simple=False)
         save_path = os.path.join(save_dir, filename+'.png')
         im.save(save_path)
 
@@ -69,10 +69,10 @@ if __name__ == '__main__':
     print(args)
 
     hands23_root   = '/x/dandans/hands23_data_release'
-    hands23_split  = hands23_new_root + f'/allMergedSplit'
-    hands23_blur   = hands23_new_root + f'/allMergedBlur'
-    hands23_txt    = hands23_new_root + f'/allMergedTxt'
-    hands23_mask   = hands23_new_root + f"/masks_sam'
+    hands23_split  = hands23_root + f'/allMergedSplit'
+    hands23_blur   = hands23_root + f'/allMergedBlur'
+    hands23_txt    = hands23_root + f'/allMergedTxt'
+    hands23_mask   = hands23_root + f'/masks_sam'
 
     
     EK_ls = glob.glob(f'{hands23_blur}/EK*.jpg')
@@ -89,21 +89,11 @@ if __name__ == '__main__':
     os.makedirs(save_h_dir, exist_ok=True)
 
 
-    for name, sub in zip(['ND', 'EK', 'AR', 'CC'], [ND_ls, EK_ls, AR_ls, CC_ls]):
-        print(len(sub))
-        random.shuffle(sub)
-        select_ls = []
-        for imPath in sub:
-            txtPath = imPath+'.txt'
-            line_ls = read_txt(txtPath)
-            for line in line_ls:
-                side, state, handBox, objectBox, toolType, secObjectBox, graspType = map(lambda x: x.strip(), line.split("|"))
-                if secObjectBox != 'None':
-                    select_ls.append(imPath)
-                    continue
-            if len(select_ls) > 100:
-                break
-            
+    for name, sub_ls in zip(['ND', 'EK', 'AR', 'CC'], [ND_ls, EK_ls, AR_ls, CC_ls]):
+        random.shuffle(sub_ls)
+        select_ls = sub_ls[:100]
+
+        print(f'visualize {len(select_ls)}/{len(sub_ls)} from subset {name}')
         P = multiprocessing.Pool(36)
         P.map(draw_ann, select_ls)   
 

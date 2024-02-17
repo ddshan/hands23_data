@@ -1,6 +1,6 @@
 # Hands23 data
 
-Data repository for the paper: **Towards A Richer 2D Understanding of Hands at Scale (NeurIPS2023)**
+Data repository for the paper: **Towards A Richer 2D Understanding of Hands at Scale (NeurIPS2023)**.
 
 Tianyi Cheng*, [Dandan Shan*](https://ddshan.github.io/), Ayda Hassen, [Richard Higgins](https://relh.net/), [David Fouhey](https://cs.nyu.edu/~fouhey/).
 
@@ -11,7 +11,7 @@ It contains the SAM mask generation and annotation visulation for Hands23 datase
 wget https://fouheylab.eecs.umich.edu/~dandans/projects/hands23/data/hands23_data.zip
 unzip hands23_data.zip -d where/to/unzip/
 ```
-After unzip, the folder structure will look like below. `allMergedSplit` contains the train/val/test splits. `allMergedBlur` contains all JPG images. `allMergedTxt` contains all TXT annotation files correspond to JPG files by only adding `.txt` suffix. 
+After unzip, the folder structure will look like below. `allMergedSplit` contains the train/val/test splits. `allMergedBlur` contains all JPG images. `allMergedTxt` contains all TXT annotation files correspond to JPG images by only adding `.txt` suffix. 
 ```
 hands23_data/
 ├── allMergedSplit
