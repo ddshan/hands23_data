@@ -51,8 +51,8 @@ python data_prep/get_coco_format.py
  -->
 
 
-## Acknowledgement
-SAM
+<!-- ## Acknowledgement
+SAM -->
 
 ## Citing
 
