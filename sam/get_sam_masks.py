@@ -1,15 +1,12 @@
 '''Run SAM on hands23 dataset.
 '''
-
+import sys, os, random, cv2, pdb
+sys.path.append('../')
 import numpy as np
 import torch, os, argparse
 import matplotlib.pyplot as plt
-import cv2, pdb
 from tqdm import tqdm
-import random
-import sys, os, random
-from tqdm import tqdm
-from data_prep.data_util import *
+from data_util import *
 from segment_anything import sam_model_registry, SamPredictor
 from segment_anything.utils.transforms import ResizeLongestSide
 
@@ -48,7 +45,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--split', nargs='+', required=True, help='Which split to generate COCO annotations.')
-    parser.add_argument('--target', type=str, default='hands23', help='Which dateset to generate SAM labels.')
+    parser.add_argument('--hands23_root', type=str, default='/x/dandans/hands23_data_release', help='Which dateset to generate SAM labels.')
     args = parser.parse_args()
 
     # define SAM
@@ -61,7 +58,7 @@ if __name__ == '__main__':
     predictor = SamPredictor(sam)
     
     # data dir
-    hands23_root = '/x/dandans/hands23_data_release'
+    hands23_root = args.hands23_root
     txtBase   = f"{hands23_root}/allMergedTxt"
     src       = f"{hands23_root}/allMergedBlur"
     splitBase = f"{hands23_root}/allMergedSplit"
@@ -69,7 +66,7 @@ if __name__ == '__main__':
     mask_dir = f'{hands23_root}/masks_sam'
     os.makedirs(mask_dir, exist_ok=True)
 
-
+    
     for split in args.split: #['train', 'val', 'test']:
         
         splitPath = os.path.join(splitBase, split.upper()+'.txt')

@@ -61,14 +61,11 @@ def draw_ann(imPath):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--copy_data", action='store_true')
-    parser.add_argument("--show_vis", action='store_true')
-    parser.add_argument("--show_stats", action='store_true')
-    parser.add_argument("--table_stats", action='store_true')
+    parser.add_argument('--hands23_root', type=str, default='/nfs/turbo/fouheyTemp/dandans/datasets_clean/hands23_data', help='Which dateset to generate SAM labels.')
     args = parser.parse_args()
     print(args)
 
-    hands23_root   = '/x/dandans/hands23_data_release'
+    hands23_root   = args.hands23_root
     hands23_split  = hands23_root + f'/allMergedSplit'
     hands23_blur   = hands23_root + f'/allMergedBlur'
     hands23_txt    = hands23_root + f'/allMergedTxt'

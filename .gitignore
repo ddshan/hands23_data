@@ -2,3 +2,5 @@ __pycache__/
 */__pycache__/
 
 get_stats/
+data_prep/
+sam/sam_vit_h_4b8939.pth
