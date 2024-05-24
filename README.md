@@ -20,8 +20,11 @@ hands23_data/
 |   └── VAL.txt
 ├── allMergedBlur
 |   └── *.jpg
-└── allMergedTxt
-    └── *.jpg.txt
+├── allMergedTxt
+|    └── *.jpg.txt
+└── masks_sam (to be created in the next step)
+    └── *.png
+
 ```
 
 
