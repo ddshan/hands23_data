@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--split', nargs='+', required=True, help='Which split to generate COCO annotations.')
-    parser.add_argument('--hands23_root', type=str, default='/x/dandans/hands23_data_release', help='Which dateset to generate SAM labels.')
+    parser.add_argument('--hands23_root', type=str, default='/path/to/hands23_data', help='Which dateset to generate SAM labels.')
     args = parser.parse_args()
 
     # define SAM
